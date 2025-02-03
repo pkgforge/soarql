@@ -1,0 +1,22 @@
+[package]
+name = "soarql"
+version = "0.1.0"
+edition = "2024"
+authors = ["Rabindra Dhakal <contact@qaidvoid.dev>"]
+license = "MIT"
+description = "Convert Soar JSON metadata to SQLite format"
+repository = "https://github.com/QaidVoid/soarql"
+keywords = ["soar", "sbuild", "lint", "build", "package"]
+
+[dependencies]
+regex = { version = "1.11.1", default-features = false, features = ["unicode-case", "unicode-perl", "std"] }
+rusqlite = { version = "0.33.0", features = ["bundled", "rusqlite-macros"] }
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = { version = "1.0.138", features = ["indexmap"] }
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
