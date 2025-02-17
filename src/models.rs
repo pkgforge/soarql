@@ -92,10 +92,16 @@ pub struct RemotePackage {
     #[serde(default, deserialize_with = "optional_number")]
     pub rank: Option<u64>,
 
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub pkg: Option<String>,
+
     pub pkg_id: String,
     pub pkg_name: String,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub pkg_family: Option<String>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub pkg_type: Option<String>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
@@ -103,7 +109,10 @@ pub struct RemotePackage {
 
     pub description: String,
     pub version: String,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub version_upstream: Option<String>,
+
     pub download_url: String,
 
     #[serde(default, deserialize_with = "optional_number")]
@@ -116,7 +125,11 @@ pub struct RemotePackage {
     pub ghcr_size_raw: Option<u64>,
 
     pub ghcr_files: Option<Vec<String>>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub ghcr_blob: Option<String>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub ghcr_url: Option<String>,
 
     #[serde(alias = "src_url")]
@@ -137,7 +150,10 @@ pub struct RemotePackage {
     #[serde(alias = "tag")]
     pub tags: Option<Vec<String>>,
 
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub bsum: Option<String>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
     pub shasum: Option<String>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
