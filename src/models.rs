@@ -199,4 +199,5 @@ pub struct RemotePackage {
 
     pub repology: Option<Vec<String>>,
     pub snapshots: Option<Vec<String>>,
+    pub replaces: Option<Vec<String>>,
 }

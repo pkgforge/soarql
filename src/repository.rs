@@ -75,6 +75,7 @@ impl<'a> PackageRepository<'a> {
         let categories = serde_json::to_string(&package.categories).unwrap();
         let snapshots = serde_json::to_string(&package.snapshots).unwrap();
         let repology = serde_json::to_string(&package.repology).unwrap();
+        let replaces = serde_json::to_string(&package.replaces).unwrap();
 
         let provides = package.provides.clone().map(|vec| {
             vec.iter()
@@ -132,6 +133,7 @@ impl<'a> PackageRepository<'a> {
             provides,
             snapshots,
             repology,
+            replaces,
             package.download_count,
             package.download_count_week,
             package.download_count_month
