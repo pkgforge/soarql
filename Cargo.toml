@@ -10,7 +10,7 @@ keywords = ["soar", "sbuild", "lint", "build", "package"]
 
 [dependencies]
 regex = { version = "1.11.1", default-features = false, features = ["unicode-case", "unicode-perl", "std"] }
-rusqlite = { version = "0.33.0", features = ["bundled", "rusqlite-macros"] }
+rusqlite = { version = "0.35.0", features = ["bundled", "rusqlite-macros"] }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = { version = "1.0.138", features = ["indexmap"] }
 
