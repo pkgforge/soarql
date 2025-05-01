@@ -23,15 +23,15 @@ fn create_database<P: AsRef<Path>>(
 
     if path.exists() {
         if path.is_symlink() || path.is_file() {
-            fs::remove_file(&path).unwrap();
+            fs::remove_file(path).unwrap();
         } else {
             println!("{} exists but is not a file.", path.display());
         }
     }
 
-    File::create(&path).unwrap();
+    File::create(path).unwrap();
 
-    let mut conn = Connection::open(&path).unwrap();
+    let mut conn = Connection::open(path).unwrap();
     let tx = conn.transaction()?;
 
     let sql = include_str!("metadata.sql");
@@ -48,7 +48,7 @@ fn create_database<P: AsRef<Path>>(
         let statements = Statements::new(&tx)?;
 
         let mut repo = PackageRepository::new(&tx, statements, repo_name);
-        repo.import_packages(&packages, "unknown")?;
+        repo.import_packages(packages, "unknown")?;
     }
 
     tx.commit()?;
@@ -57,7 +57,7 @@ fn create_database<P: AsRef<Path>>(
 }
 
 fn abort(msg: &str) -> ! {
-    eprintln!("{}", msg);
+    eprintln!("{msg}");
     let usage = r#"
 Soar JSON metadata to SQLite converter
 
@@ -66,7 +66,7 @@ Options:
    --output, -o                 Output SQLite file
    --repo, -r                   Name of the repository
     "#;
-    eprintln!("{}", usage);
+    eprintln!("{usage}");
     std::process::exit(1);
 }
 
@@ -113,7 +113,7 @@ fn main() -> io::Result<()> {
             }
             arg => {
                 if arg.starts_with("-") {
-                    abort(&format!("Unknown argument '{}'", arg));
+                    abort(&format!("Unknown argument '{arg}'"));
                 }
             }
         }

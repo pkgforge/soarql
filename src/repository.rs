@@ -84,7 +84,7 @@ impl<'a> PackageRepository<'a> {
                         || ["==", "=>", ":"]
                             .iter()
                             .find_map(|&delim| p.split_once(delim))
-                            .map_or(false, |(first, _)| first == package.pkg_name);
+                            .is_some_and(|(first, _)| first == package.pkg_name);
                     matches.then(|| PackageProvide::from_string(&p))
                 })
                 .collect::<Vec<PackageProvide>>()
@@ -140,7 +140,7 @@ impl<'a> PackageRepository<'a> {
         }
         let package_id = self.tx.last_insert_rowid();
         for maintainer in &package.maintainers.clone().unwrap_or_default() {
-            let typed = self.extract_name_and_contact(&maintainer);
+            let typed = self.extract_name_and_contact(maintainer);
             if let Some((name, contact)) = typed {
                 let maintainer_id = self.get_or_create_maintainer(&name, &contact)?;
                 self.statements
