@@ -197,6 +197,42 @@ pub struct RemotePackage {
     #[serde(default, deserialize_with = "optional_number")]
     pub download_count_week: Option<u64>,
 
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub bundle: Option<bool>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
+    pub bundle_type: Option<String>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub soar_syms: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub deprecated: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub desktop_integration: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub external: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub installable: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub portable: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub recurse_provides: Option<bool>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub trusted: Option<bool>,
+
+    #[serde(default, deserialize_with = "empty_is_none")]
+    pub version_latest: Option<String>,
+
+    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    pub version_outdated: Option<bool>,
+
     pub repology: Option<Vec<String>>,
     pub snapshots: Option<Vec<String>>,
     pub replaces: Option<Vec<String>>,
