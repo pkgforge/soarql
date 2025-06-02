@@ -1,4 +1,6 @@
-use serde::{Deserialize, Deserializer, Serialize, de};
+use crate::deserializers::{empty_is_none, flexible_bool, optional_u64};
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum ProvideStrategy {
@@ -44,52 +46,15 @@ impl PackageProvide {
     }
 }
 
-fn empty_is_none<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: Option<String> = Option::deserialize(deserializer)?;
-    Ok(s.filter(|s| !s.is_empty()))
-}
-
-fn optional_number<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: Option<String> = Option::deserialize(deserializer)?;
-    Ok(s.filter(|s| !s.is_empty())
-        .and_then(|s| s.parse::<i64>().ok())
-        .filter(|&n| n >= 0)
-        .map(|n| n as u64))
-}
-
-fn opt_boolean_from_string<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: Option<String> = Deserialize::deserialize(deserializer)?;
-    s.map(|s| match s.to_lowercase().as_str() {
-        "true" | "yes" | "1" => Some(true),
-        "false" | "no" | "0" => Some(false),
-        _ => None,
-    })
-    .ok_or_else(|| {
-        de::Error::invalid_value(
-            de::Unexpected::Option,
-            &"a valid boolean (true/false, yes/no, 1/0)",
-        )
-    })
-}
-
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct RemotePackage {
-    #[serde(deserialize_with = "opt_boolean_from_string", alias = "_disabled")]
+    #[serde(deserialize_with = "flexible_bool", alias = "_disabled")]
     pub disabled: Option<bool>,
 
     #[serde(alias = "_disabled_reason")]
     pub disabled_reason: Option<serde_json::Value>,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub rank: Option<u64>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
@@ -115,13 +80,13 @@ pub struct RemotePackage {
 
     pub download_url: String,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub size_raw: Option<u64>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
     pub ghcr_pkg: Option<String>,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub ghcr_size_raw: Option<u64>,
 
     pub ghcr_files: Option<Vec<String>>,
@@ -188,49 +153,49 @@ pub struct RemotePackage {
     #[serde(default, deserialize_with = "empty_is_none")]
     pub app_id: Option<String>,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub download_count: Option<u64>,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub download_count_month: Option<u64>,
 
-    #[serde(default, deserialize_with = "optional_number")]
+    #[serde(default, deserialize_with = "optional_u64")]
     pub download_count_week: Option<u64>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub bundle: Option<bool>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
     pub bundle_type: Option<String>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub soar_syms: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub deprecated: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub desktop_integration: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub external: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub installable: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub portable: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub recurse_provides: Option<bool>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub trusted: Option<bool>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
     pub version_latest: Option<String>,
 
-    #[serde(default, deserialize_with = "opt_boolean_from_string")]
+    #[serde(default, deserialize_with = "flexible_bool")]
     pub version_outdated: Option<bool>,
 
     pub repology: Option<Vec<String>>,

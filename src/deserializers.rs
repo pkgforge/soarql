@@ -1,0 +1,48 @@
+use serde::{Deserialize, Deserializer, de};
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum FlexiBool {
+    Bool(bool),
+    String(String),
+}
+
+pub fn empty_is_none<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: Option<String> = Option::deserialize(deserializer)?;
+    Ok(s.filter(|s| !s.is_empty()))
+}
+
+pub fn optional_u64<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: Option<String> = Option::deserialize(deserializer)?;
+    Ok(s.filter(|s| !s.is_empty())
+        .and_then(|s| s.parse::<i64>().ok())
+        .filter(|&n| n >= 0)
+        .map(|n| n as u64))
+}
+
+pub fn flexible_bool<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match Option::<FlexiBool>::deserialize(deserializer)? {
+        Some(FlexiBool::Bool(b)) => Ok(Some(b)),
+        Some(FlexiBool::String(s)) => {
+            match s.to_lowercase().as_str() {
+                "true" | "yes" | "1" => Ok(Some(true)),
+                "false" | "no" | "0" => Ok(Some(false)),
+                "" => Ok(None), // Empty string becomes None
+                _ => Err(de::Error::invalid_value(
+                    de::Unexpected::Str(&s),
+                    &"a valid boolean (true/false, yes/no, 1/0)",
+                )),
+            }
+        }
+        None => Ok(None),
+    }
+}

@@ -10,6 +10,7 @@ use repository::PackageRepository;
 use rusqlite::Connection;
 use statements::Statements;
 
+mod deserializers;
 mod models;
 mod repository;
 mod statements;
