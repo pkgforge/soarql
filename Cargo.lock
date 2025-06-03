@@ -86,9 +86,9 @@ checksum = "4a5f13b858c8d314ee3e8f639011f7ccefe71f97f96e50151fb991f267928e2c"
 
 [[package]]
 name = "libsqlite3-sys"
-version = "0.33.0"
+version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "947e6816f7825b2b45027c2c32e7085da9934defa535de4a6a46b10a4d5257fa"
+checksum = "91632f3b4fb6bd1d72aa3d78f41ffecfcf2b1a6648d8c241dbe7dbfaf4875e15"
 dependencies = [
  "cc",
  "pkg-config",
@@ -222,9 +222,9 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
 name = "rusqlite"
-version = "0.35.0"
+version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a22715a5d6deef63c637207afbe68d0c72c3f8d0022d7cf9714c442d6157606b"
+checksum = "3de23c3319433716cf134eed225fe9986bc24f63bed9be9f20c329029e672dc7"
 dependencies = [
  "bitflags",
  "fallible-iterator",
@@ -237,9 +237,9 @@ dependencies = [
 
 [[package]]
 name = "rusqlite-macros"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ba708b8c51e7bdf79141f230241ac69b2244a12b2b8ff53c8a68949532416b4"
+checksum = "ddfb91de75df4c93dc85781b3bc7e5d5ce3c2de9eb23dc7c4e3b82ae48b22ef8"
 dependencies = [
  "fallible-iterator",
  "litrs",
@@ -315,9 +315,9 @@ dependencies = [
 
 [[package]]
 name = "sqlite3-parser"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3a9d9c3080a2da890fff8c0a8b764da31460877be04f7ef9a4894a09bfdffb8"
+checksum = "44b0cfa2d88bd3288931e1af41f1e8427199458c894bed44e579e0ffd6ceb74b"
 dependencies = [
  "bitflags",
  "cc",
