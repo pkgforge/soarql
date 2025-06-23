@@ -59,7 +59,7 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y --no-install-recommends \
-            --allow-unauthenticated musl-tools b3sum
+            --allow-unauthenticated musl-tools b3sum file
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
@@ -92,7 +92,9 @@ jobs:
           mkdir -p nightly
           cp "target/${{ matrix.build.TARGET }}/release/soarql" nightly/soarql-${{ matrix.build.NAME }}
           b3sum nightly/soarql-${{ matrix.build.NAME }} > nightly/soarql-${{ matrix.build.NAME }}.b3sum
-
+          du -bh nightly/soarql-${{ matrix.build.NAME }}
+          file nightly/soarql-${{ matrix.build.NAME }}
+          
       - name: Upload nightly binary
         uses: softprops/action-gh-release@v2
         with:
