@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update -y
-          sudo apt install b3sum file -y
+          sudo apt install b3sum findutils file -y
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
@@ -97,8 +97,8 @@ jobs:
           mkdir -p nightly
           cp "target/${{ matrix.build.TARGET }}/release/soarql" "${ARTIFACT}"
           b3sum "${ARTIFACT}" > "${ARTIFACT}.b3sum"
-          du -bh "${ARTIFACT}"
-          file "${ARTIFACT}"
+          realpath "${ARTIFACT}" | xargs -I "{}" bash -c \
+           'printf "\nFile: $(basename {})\n  Type: $(file -b {})\n  B3sum: $(b3sum {} | cut -d" " -f1)\n  SHA256sum: $(sha256sum {} | cut -d" " -f1)\n  Size: $(du -bh {} | cut -f1)\n"'
           
       - name: Upload nightly binary
         uses: softprops/action-gh-release@v2
