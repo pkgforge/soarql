@@ -1,5 +1,8 @@
 name: soarql
-
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+  
 on:
   push:
     branches:
@@ -58,8 +61,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update -y
-          sudo apt install -y --no-install-recommends \
-            --allow-unauthenticated musl-tools b3sum file
+          sudo apt install b3sum file -y
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
@@ -67,6 +69,7 @@ jobs:
           targets: ${{ matrix.build.TARGET }}
 
       - name: Install Cross
+        shell: bash
         run: |
           cargo install cross --git "https://github.com/cross-rs/cross" --jobs="$(($(nproc)+1))"
           hash -r &>/dev/null
@@ -84,16 +87,18 @@ jobs:
                       -C link-arg=-Wl,--build-id=none \
                       -C link-arg=-Wl,--discard-all \
                       -C link-arg=-Wl,--strip-all"
-        run: RUSTFLAGS="-C target-feature=+crt-static" cross +nightly build --release --locked --target "${{ matrix.build.TARGET }}" --jobs="$(($(nproc)+1))" --verbose
+        run: cross +nightly build --release --locked --target "${{ matrix.build.TARGET }}" --jobs="$(($(nproc)+1))" --verbose
 
       - name: Prepare nightly binary
+        env:
+          ARTIFACT: "nightly/soarql-${{ matrix.build.NAME }}"
         shell: bash
         run: |
           mkdir -p nightly
-          cp "target/${{ matrix.build.TARGET }}/release/soarql" nightly/soarql-${{ matrix.build.NAME }}
-          b3sum nightly/soarql-${{ matrix.build.NAME }} > nightly/soarql-${{ matrix.build.NAME }}.b3sum
-          du -bh nightly/soarql-${{ matrix.build.NAME }}
-          file nightly/soarql-${{ matrix.build.NAME }}
+          cp "target/${{ matrix.build.TARGET }}/release/soarql" "${ARTIFACT}"
+          b3sum "${ARTIFACT}" > "${ARTIFACT}.b3sum"
+          du -bh "${ARTIFACT}"
+          file "${ARTIFACT}"
           
       - name: Upload nightly binary
         uses: softprops/action-gh-release@v2
