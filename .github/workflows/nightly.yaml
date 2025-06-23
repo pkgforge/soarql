@@ -57,8 +57,8 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
+          sudo apt update -y
+          sudo apt install -y --no-install-recommends \
             --allow-unauthenticated musl-tools b3sum
 
       - name: Install Rust toolchain
@@ -66,13 +66,25 @@ jobs:
         with:
           targets: ${{ matrix.build.TARGET }}
 
-      - name: Install cross-compilation tools
-        uses: taiki-e/setup-cross-toolchain-action@v1
-        with:
-          target: ${{ matrix.build.TARGET }}
-
+      - name: Install Cross
+        run: |
+          cargo install cross --git "https://github.com/cross-rs/cross" --jobs="$(($(nproc)+1))"
+          hash -r &>/dev/null
+          command -v cross &>/dev/null || { echo "cross command not found" >&2; exit 1; } 
+       
       - name: Build
-        run: RUSTFLAGS="-C target-feature=+crt-static" cargo build --release --locked --target ${{ matrix.build.TARGET }}
+        env:
+          RUSTFLAGS: "-C target-feature=+crt-static \
+                      -C default-linker-libraries=yes \
+                      -C link-self-contained=yes \
+                      -C opt-level=z \
+                      -C debuginfo=none \
+                      -C strip=symbols \
+                      -C link-arg=-Wl,-S \
+                      -C link-arg=-Wl,--build-id=none \
+                      -C link-arg=-Wl,--discard-all \
+                      -C link-arg=-Wl,--strip-all"
+        run: RUSTFLAGS="-C target-feature=+crt-static" cross +nightly build --release --locked --target "${{ matrix.build.TARGET }}" --jobs="$(($(nproc)+1))" --verbose
 
       - name: Prepare nightly binary
         shell: bash
