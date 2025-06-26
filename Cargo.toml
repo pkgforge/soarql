@@ -16,7 +16,7 @@ serde_json = { version = "1.0.140", features = ["indexmap"] }
 
 [profile.release]
 strip = true
-opt-level = "z"
+opt-level = 3
 lto = true
 codegen-units = 1
 panic = "abort"
