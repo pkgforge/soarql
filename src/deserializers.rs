@@ -1,4 +1,5 @@
 use serde::{Deserialize, Deserializer, de};
+use serde_json::Value;
 
 #[derive(Deserialize)]
 #[serde(untagged)]
@@ -37,12 +38,38 @@ where
                 "true" | "yes" | "1" => Ok(Some(true)),
                 "false" | "no" | "0" => Ok(Some(false)),
                 "" => Ok(None), // Empty string becomes None
-                _ => Err(de::Error::invalid_value(
-                    de::Unexpected::Str(&s),
-                    &"a valid boolean (true/false, yes/no, 1/0)",
-                )),
+                _ => {
+                    Err(de::Error::invalid_value(
+                        de::Unexpected::Str(&s),
+                        &"a valid boolean (true/false, yes/no, 1/0)",
+                    ))
+                }
             }
         }
         None => Ok(None),
+    }
+}
+
+pub fn normalize_resource<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let v: Option<Value> = Option::deserialize(deserializer)?;
+    match v {
+        Some(Value::String(s)) => {
+            if s.trim().is_empty() {
+                Ok(None)
+            } else {
+                Ok(Some(s))
+            }
+        }
+        Some(Value::Object(map)) => {
+            if let Some(Value::String(url)) = map.get("url") {
+                Ok(Some(url.clone()))
+            } else {
+                Ok(None)
+            }
+        }
+        _ => Ok(None),
     }
 }

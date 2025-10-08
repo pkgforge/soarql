@@ -1,6 +1,6 @@
-use crate::deserializers::{empty_is_none, flexible_bool, optional_u64};
-
 use serde::{Deserialize, Serialize};
+
+use crate::deserializers::{empty_is_none, flexible_bool, normalize_resource, optional_u64};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum ProvideStrategy {
@@ -144,7 +144,7 @@ pub struct RemotePackage {
     #[serde(default, deserialize_with = "empty_is_none")]
     pub icon: Option<String>,
 
-    #[serde(default, deserialize_with = "empty_is_none")]
+    #[serde(default, deserialize_with = "normalize_resource")]
     pub desktop: Option<String>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
