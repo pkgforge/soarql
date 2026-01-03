@@ -8,6 +8,13 @@ enum FlexiBool {
     String(String),
 }
 
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum FlexiString {
+    String(String),
+    Number(u64),
+}
+
 pub fn empty_is_none<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
 where
     D: Deserializer<'de>,
@@ -20,11 +27,17 @@ pub fn optional_u64<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    let s: Option<String> = Option::deserialize(deserializer)?;
-    Ok(s.filter(|s| !s.is_empty())
-        .and_then(|s| s.parse::<i64>().ok())
-        .filter(|&n| n >= 0)
-        .map(|n| n as u64))
+    match Option::<FlexiString>::deserialize(deserializer)? {
+        Some(FlexiString::String(s)) => {
+            if s.trim().is_empty() {
+                Ok(None)
+            } else {
+                Ok(Some(s.parse::<u64>().unwrap()))
+            }
+        }
+        Some(FlexiString::Number(n)) => Ok(Some(n)),
+        None => Ok(None),
+    }
 }
 
 pub fn flexible_bool<'de, D>(deserializer: D) -> Result<Option<bool>, D::Error>
@@ -38,12 +51,10 @@ where
                 "true" | "yes" | "1" => Ok(Some(true)),
                 "false" | "no" | "0" => Ok(Some(false)),
                 "" => Ok(None), // Empty string becomes None
-                _ => {
-                    Err(de::Error::invalid_value(
-                        de::Unexpected::Str(&s),
-                        &"a valid boolean (true/false, yes/no, 1/0)",
-                    ))
-                }
+                _ => Err(de::Error::invalid_value(
+                    de::Unexpected::Str(&s),
+                    &"a valid boolean (true/false, yes/no, 1/0)",
+                )),
             }
         }
         None => Ok(None),
