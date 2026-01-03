@@ -25,27 +25,23 @@ impl<'a> Statements<'a> {
             )?,
             package_insert: tx.prepare(
                 "INSERT INTO packages (
-                    disabled, disabled_reason, rank, pkg, pkg_id, pkg_name,
-                    pkg_family, pkg_type, pkg_webpage, app_id, description,
-                    version, version_upstream, licenses, download_url,
+                    rank, pkg_id, pkg_name, pkg_family, pkg_type, pkg_webpage,
+                    app_id, description, version, licenses, download_url,
                     size, ghcr_pkg, ghcr_size, ghcr_files, ghcr_blob, ghcr_url,
-                    bsum, shasum, icon, desktop, appstream, homepages, notes,
+                    bsum, icon, desktop, appstream, homepages, notes,
                     source_urls, tags, categories, build_id, build_date,
                     build_action, build_script, build_log, provides, snapshots,
-                    repology, replaces, download_count, download_count_week,
-                    download_count_month, bundle, bundle_type, soar_syms,
-                    deprecated, desktop_integration, external, installable,
-                    portable, recurse_provides, trusted, version_latest,
-                    version_outdated
+                    repology, replaces, soar_syms, deprecated,
+                    desktop_integration, portable, recurse_provides
                 )
                 VALUES
                 (
-                    ?1, jsonb(?2), ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12,
-                    ?13, jsonb(?14), ?15, ?16, ?17, ?18, jsonb(?19), ?20, ?21,
-                    ?22, ?23, ?24, ?25, ?26, jsonb(?27), jsonb(?28), jsonb(?29),
-                    jsonb(?30), jsonb(?31), ?32, ?33, ?34, ?35, ?36, jsonb(?37),
-                    jsonb(?38), jsonb(?39), jsonb(?40), ?41, ?42, ?43, ?44,
-                    ?45, ?46, ?47, ?48, ?49, ?50, ?51, ?52, ?53, ?54, ?55
+                    ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, jsonb(?10),
+                    ?11, ?12, ?13, ?14, jsonb(?15), ?16, ?17, ?18,
+                    ?19, ?20, ?21, jsonb(?22), jsonb(?23), jsonb(?24),
+                    jsonb(?25), jsonb(?26), ?27, ?28, ?29, ?30, ?31, jsonb(?32),
+                    jsonb(?33), jsonb(?34), jsonb(?35), ?36, ?37, ?38, ?39,
+                    ?40
                 )
                 ON CONFLICT (pkg_id, pkg_name, version) DO NOTHING",
             )?,

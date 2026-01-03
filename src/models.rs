@@ -48,17 +48,8 @@ impl PackageProvide {
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct RemotePackage {
-    #[serde(deserialize_with = "flexible_bool", alias = "_disabled")]
-    pub disabled: Option<bool>,
-
-    #[serde(alias = "_disabled_reason")]
-    pub disabled_reason: Option<serde_json::Value>,
-
     #[serde(default, deserialize_with = "optional_u64")]
     pub rank: Option<u64>,
-
-    #[serde(default, deserialize_with = "empty_is_none")]
-    pub pkg: Option<String>,
 
     pub pkg_id: String,
     pub pkg_name: String,
@@ -74,9 +65,6 @@ pub struct RemotePackage {
 
     pub description: String,
     pub version: String,
-
-    #[serde(default, deserialize_with = "empty_is_none")]
-    pub version_upstream: Option<String>,
 
     pub download_url: String,
 
@@ -119,9 +107,6 @@ pub struct RemotePackage {
     pub bsum: Option<String>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
-    pub shasum: Option<String>,
-
-    #[serde(default, deserialize_with = "empty_is_none")]
     pub build_id: Option<String>,
 
     #[serde(default, deserialize_with = "empty_is_none")]
@@ -153,21 +138,6 @@ pub struct RemotePackage {
     #[serde(default, deserialize_with = "empty_is_none")]
     pub app_id: Option<String>,
 
-    #[serde(default, deserialize_with = "optional_u64")]
-    pub download_count: Option<u64>,
-
-    #[serde(default, deserialize_with = "optional_u64")]
-    pub download_count_month: Option<u64>,
-
-    #[serde(default, deserialize_with = "optional_u64")]
-    pub download_count_week: Option<u64>,
-
-    #[serde(default, deserialize_with = "flexible_bool")]
-    pub bundle: Option<bool>,
-
-    #[serde(default, deserialize_with = "empty_is_none")]
-    pub bundle_type: Option<String>,
-
     #[serde(default, deserialize_with = "flexible_bool")]
     pub soar_syms: Option<bool>,
 
@@ -178,25 +148,10 @@ pub struct RemotePackage {
     pub desktop_integration: Option<bool>,
 
     #[serde(default, deserialize_with = "flexible_bool")]
-    pub external: Option<bool>,
-
-    #[serde(default, deserialize_with = "flexible_bool")]
-    pub installable: Option<bool>,
-
-    #[serde(default, deserialize_with = "flexible_bool")]
     pub portable: Option<bool>,
 
     #[serde(default, deserialize_with = "flexible_bool")]
     pub recurse_provides: Option<bool>,
-
-    #[serde(default, deserialize_with = "flexible_bool")]
-    pub trusted: Option<bool>,
-
-    #[serde(default, deserialize_with = "empty_is_none")]
-    pub version_latest: Option<String>,
-
-    #[serde(default, deserialize_with = "flexible_bool")]
-    pub version_outdated: Option<bool>,
 
     pub repology: Option<Vec<String>>,
     pub snapshots: Option<Vec<String>>,

@@ -65,7 +65,6 @@ impl<'a> PackageRepository<'a> {
     }
 
     fn insert_package(&mut self, package: &RemotePackage) -> Result<()> {
-        let disabled_reason = serde_json::to_string(&package.disabled_reason).unwrap();
         let licenses = serde_json::to_string(&package.licenses).unwrap();
         let ghcr_files = serde_json::to_string(&package.ghcr_files).unwrap();
         let homepages = serde_json::to_string(&package.homepages).unwrap();
@@ -94,10 +93,7 @@ impl<'a> PackageRepository<'a> {
         });
         let provides = serde_json::to_string(&provides).unwrap();
         let inserted = self.statements.package_insert.execute(params![
-            package.disabled,
-            disabled_reason,
             package.rank,
-            package.pkg,
             package.pkg_id,
             package.pkg_name,
             package.pkg_family,
@@ -106,7 +102,6 @@ impl<'a> PackageRepository<'a> {
             package.app_id,
             package.description,
             package.version,
-            package.version_upstream,
             licenses,
             package.download_url,
             package.size_raw,
@@ -116,7 +111,6 @@ impl<'a> PackageRepository<'a> {
             package.ghcr_blob,
             package.ghcr_url,
             package.bsum,
-            package.shasum,
             package.icon,
             package.desktop,
             package.appstream,
@@ -134,21 +128,11 @@ impl<'a> PackageRepository<'a> {
             snapshots,
             repology,
             replaces,
-            package.download_count,
-            package.download_count_week,
-            package.download_count_month,
-            package.bundle.unwrap_or(false),
-            package.bundle_type,
             package.soar_syms.unwrap_or(false),
             package.deprecated.unwrap_or(false),
             package.desktop_integration,
-            package.external,
-            package.installable,
             package.portable,
             package.recurse_provides,
-            package.trusted,
-            package.version_latest,
-            package.version_outdated
         ])?;
         if inserted == 0 {
             return Ok(());

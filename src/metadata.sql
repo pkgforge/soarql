@@ -19,8 +19,6 @@ CREATE TABLE package_maintainers (
 
 CREATE TABLE packages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  disabled BOOLEAN NOT NULL DEFAULT false,
-  disabled_reason JSONB,
   rank INT,
   pkg TEXT COLLATE NOCASE,
   pkg_id TEXT NOT NULL COLLATE NOCASE,
